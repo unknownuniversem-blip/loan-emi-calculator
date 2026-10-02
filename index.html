@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>Smart Loan EMI & Prepayment Calculator - Save Lakhs in Interest</title>
-  <meta name="description" content="Calculate monthly EMI with mixed Years + Months duration, simulate extra monthly prepayments or annual lump-sums, and see how much interest you save. 100% private.">
+  <meta name="description" content="Calculate monthly EMI with mixed Years + Months duration, spacious tactile plus/minus steppers, and prepayment savings simulator. 100% private.">
 
   <!-- Dynamic SVG Favicon -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f172a' stroke='%2338bdf8' stroke-width='1.5'/%3E%3Cpath d='M16 6v20M10 11c0-2.2 2.7-4 6-4s6 1.8 6 4-2.7 3.5-6 4-6 1.8-6 4 2.7 4 6 4 6-1.8 6-4' stroke='%2310b981' stroke-width='2.2' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
@@ -32,6 +32,16 @@
       word-break: break-word;
       overflow-wrap: anywhere;
     }
+    /* HIDE DEFAULT CRAMPED BROWSER ARROWS */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+
     html, body {
       max-width: 100vw;
       overflow-x: hidden;
@@ -125,6 +135,7 @@
       align-items: center;
       margin-bottom: 10px;
       gap: 10px;
+      flex-wrap: wrap;
     }
     .input-header label {
       font-size: 0.82rem;
@@ -133,15 +144,46 @@
       text-transform: uppercase;
       letter-spacing: 0.03em;
     }
-    /* SPACIOUS CLEAR-VIEW INPUT BOXES */
+
+    /* CUSTOM STEPPER CONTROLS WITH AMPLE BREATHING ROOM */
+    .stepper-container {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .step-btn {
+      width: 32px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #090f1d;
+      color: var(--primary);
+      font-weight: 800;
+      font-size: 1.15rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .step-btn:hover {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: var(--primary);
+      color: #fff;
+    }
+    .step-btn:active {
+      transform: scale(0.94);
+    }
+
     .input-field-wrap {
       display: inline-flex;
       align-items: center;
       background: var(--card-inner);
       border: 1.5px solid var(--border);
       border-radius: 9px;
-      padding: 8px 14px;
-      min-width: 175px;
+      padding: 6px 12px;
+      min-width: 145px;
       transition: all 0.2s ease;
     }
     .input-field-wrap:focus-within {
@@ -152,7 +194,7 @@
       color: var(--muted);
       font-weight: 700;
       font-size: 0.95rem;
-      margin-right: 8px;
+      margin-right: 6px;
       user-select: none;
     }
     .editable-input {
@@ -165,13 +207,19 @@
       font-family: system-ui, -apple-system, monospace;
       outline: none;
       text-align: right;
-      padding: 0 4px;
+      padding: 0 6px;
     }
-    /* Mixed Duration Box (Years + Months) */
+
+    /* MIXED TENURE CELLS WITH SEPARATE BUTTONS */
     .mixed-tenure-box {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+    }
+    .tenure-cell-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
     .tenure-cell {
       display: inline-flex;
@@ -179,8 +227,8 @@
       background: var(--card-inner);
       border: 1.5px solid var(--border);
       border-radius: 8px;
-      padding: 6px 10px;
-      width: 105px;
+      padding: 5px 8px;
+      width: 75px;
     }
     .tenure-cell:focus-within {
       border-color: var(--border-focus);
@@ -202,6 +250,12 @@
       color: var(--muted);
       font-weight: 600;
     }
+    .mini-btn {
+      width: 24px;
+      height: 28px;
+      font-size: 0.95rem;
+    }
+
     input[type="range"] {
       width: 100%;
       accent-color: var(--primary);
@@ -449,7 +503,7 @@
         <span class="brand-badge">Zero Leads</span>
       </div>
       <h1>Loan EMI & Prepayment Calculator</h1>
-      <p>Simulate loans down to 1 month or feed combined Years + Months. See how extra monthly payments save lakhs in interest.</p>
+      <p>Clean spacious number inputs with separated plus/minus controls. Easily calculate mixed Years + Months and simulate interest-cutting prepayments.</p>
     </header>
 
     <div class="calc-layout">
@@ -457,15 +511,19 @@
       <div>
         <div class="card">
           <div class="card-title">1. Loan Terms</div>
-          <div class="card-subtitle">Type directly into the inputs or drag the sliders</div>
+          <div class="card-subtitle">Use dedicated plus/minus steppers or type numbers clearly</div>
 
-          <!-- LOAN AMOUNT -->
+          <!-- LOAN AMOUNT WITH SPACED STEPPERS -->
           <div class="input-group">
             <div class="input-header">
               <label>Loan Amount (Principal)</label>
-              <div class="input-field-wrap">
-                <span class="input-prefix">₹</span>
-                <input type="number" id="txtAmount" class="editable-input" value="3000000" min="1000" max="100000000" step="5000" oninput="onBoxChange('amount', this.value)">
+              <div class="stepper-container">
+                <button type="button" class="step-btn" onclick="stepVal('amount', -50000)">−</button>
+                <div class="input-field-wrap">
+                  <span class="input-prefix">₹</span>
+                  <input type="number" id="txtAmount" class="editable-input" value="3000000" min="1000" max="100000000" step="10000" oninput="onBoxChange('amount', this.value)">
+                </div>
+                <button type="button" class="step-btn" onclick="stepVal('amount', 50000)">+</button>
               </div>
             </div>
             <input type="range" id="rngAmount" min="50000" max="20000000" step="25000" value="3000000" oninput="onSliderChange('amount', this.value)">
@@ -475,13 +533,17 @@
             </div>
           </div>
 
-          <!-- INTEREST RATE -->
+          <!-- INTEREST RATE WITH SPACED STEPPERS -->
           <div class="input-group">
             <div class="input-header">
               <label>Interest Rate (% P.A.)</label>
-              <div class="input-field-wrap" style="min-width:140px;">
-                <input type="number" id="txtRate" class="editable-input" value="8.5" min="0.1" max="50" step="0.05" oninput="onBoxChange('rate', this.value)">
-                <span class="input-prefix" style="margin-left:8px; margin-right:0;">%</span>
+              <div class="stepper-container">
+                <button type="button" class="step-btn" onclick="stepVal('rate', -0.1)">−</button>
+                <div class="input-field-wrap" style="min-width:115px;">
+                  <input type="number" id="txtRate" class="editable-input" value="8.5" min="0.1" max="50" step="0.05" oninput="onBoxChange('rate', this.value)">
+                  <span class="input-prefix" style="margin-left:6px; margin-right:0;">%</span>
+                </div>
+                <button type="button" class="step-btn" onclick="stepVal('rate', 0.1)">+</button>
               </div>
             </div>
             <input type="range" id="rngRate" min="4" max="24" step="0.05" value="8.5" oninput="onSliderChange('rate', this.value)">
@@ -491,18 +553,29 @@
             </div>
           </div>
 
-          <!-- MIXED TENURE (YEARS + MONTHS) -->
+          <!-- MIXED TENURE WITH SPACED CONTROLS -->
           <div class="input-group" style="margin-bottom:0.5rem;">
             <div class="input-header">
-              <label>Loan Duration (Years + Months)</label>
+              <label>Duration (Years + Months)</label>
               <div class="mixed-tenure-box">
-                <div class="tenure-cell">
-                  <input type="number" id="txtYears" value="20" min="0" max="40" step="1" oninput="onMixedTenureChange()">
-                  <span>Yrs</span>
+                <!-- Years Block -->
+                <div class="tenure-cell-wrap">
+                  <button type="button" class="step-btn mini-btn" onclick="stepTenure('years', -1)">−</button>
+                  <div class="tenure-cell">
+                    <input type="number" id="txtYears" value="20" min="0" max="40" step="1" oninput="onMixedTenureChange()">
+                    <span>Yrs</span>
+                  </div>
+                  <button type="button" class="step-btn mini-btn" onclick="stepTenure('years', 1)">+</button>
                 </div>
-                <div class="tenure-cell">
-                  <input type="number" id="txtMonths" value="0" min="0" max="11" step="1" oninput="onMixedTenureChange()">
-                  <span>Mo</span>
+                
+                <!-- Months Block -->
+                <div class="tenure-cell-wrap">
+                  <button type="button" class="step-btn mini-btn" onclick="stepTenure('months', -1)">−</button>
+                  <div class="tenure-cell">
+                    <input type="number" id="txtMonths" value="0" min="0" max="11" step="1" oninput="onMixedTenureChange()">
+                    <span>Mo</span>
+                  </div>
+                  <button type="button" class="step-btn mini-btn" onclick="stepTenure('months', 1)">+</button>
                 </div>
               </div>
             </div>
@@ -518,13 +591,17 @@
           <div class="card-title" style="color:var(--accent);">2. Smart Prepayment Simulator</div>
           <div class="card-subtitle">Pay just a little extra to save massive interest</div>
 
-          <!-- EXTRA MONTHLY PREPAYMENT -->
+          <!-- EXTRA PREPAYMENT WITH SPACED STEPPERS -->
           <div class="input-group">
             <div class="input-header">
               <label>Extra Monthly Prepayment</label>
-              <div class="input-field-wrap">
-                <span class="input-prefix" style="color:var(--accent);">+₹</span>
-                <input type="number" id="txtPrepay" class="editable-input" style="color:var(--accent);" value="5000" min="0" max="500000" step="500" oninput="onBoxChange('prepay', this.value)">
+              <div class="stepper-container">
+                <button type="button" class="step-btn" onclick="stepVal('prepay', -1000)" style="color:var(--accent);">−</button>
+                <div class="input-field-wrap">
+                  <span class="input-prefix" style="color:var(--accent);">+₹</span>
+                  <input type="number" id="txtPrepay" class="editable-input" style="color:var(--accent);" value="5000" min="0" max="500000" step="500" oninput="onBoxChange('prepay', this.value)">
+                </div>
+                <button type="button" class="step-btn" onclick="stepVal('prepay', 1000)" style="color:var(--accent);">+</button>
               </div>
             </div>
             <input type="range" id="rngPrepay" min="0" max="50000" step="500" value="5000" oninput="onSliderChange('prepay', this.value)" style="accent-color:var(--accent);">
@@ -669,19 +746,58 @@
       return `${totalM} Mo (${y}y ${m}m)`;
     }
 
-    // Handles user typing in Years or Months input cells
+    // TACTILE STEPPER BUTTON HANDLER (+ / - with gap)
+    function stepVal(field, delta) {
+      if (field === 'amount') {
+        let cur = parseFloat(document.getElementById('txtAmount').value) || 0;
+        cur = Math.max(50000, cur + delta);
+        document.getElementById('txtAmount').value = cur;
+        onBoxChange('amount', cur);
+      } else if (field === 'rate') {
+        let cur = parseFloat(document.getElementById('txtRate').value) || 0;
+        cur = Math.max(0.1, +(cur + delta).toFixed(2));
+        document.getElementById('txtRate').value = cur;
+        onBoxChange('rate', cur);
+      } else if (field === 'prepay') {
+        let cur = parseFloat(document.getElementById('txtPrepay').value) || 0;
+        cur = Math.max(0, cur + delta);
+        document.getElementById('txtPrepay').value = cur;
+        onBoxChange('prepay', cur);
+      }
+    }
+
+    function stepTenure(type, delta) {
+      let y = parseInt(document.getElementById('txtYears').value) || 0;
+      let m = parseInt(document.getElementById('txtMonths').value) || 0;
+
+      if (type === 'years') {
+        y = Math.max(0, y + delta);
+        document.getElementById('txtYears').value = y;
+      } else {
+        m = m + delta;
+        if (m < 0) {
+          if (y > 0) { y--; m = 11; } else { m = 0; }
+        } else if (m >= 12) {
+          y += Math.floor(m / 12);
+          m = m % 12;
+        }
+        document.getElementById('txtYears').value = y;
+        document.getElementById('txtMonths').value = m;
+      }
+      onMixedTenureChange();
+    }
+
     function onMixedTenureChange() {
       const y = parseInt(document.getElementById('txtYears').value) || 0;
       const m = parseInt(document.getElementById('txtMonths').value) || 0;
       let total = (y * 12) + m;
-      if (total < 1) total = 1; // Minimum allowed duration is 1 month
+      if (total < 1) total = 1;
 
       state.totalMonths = total;
       document.getElementById('rngTenureMonths').value = Math.min(360, total);
       calculateLoan();
     }
 
-    // Handles slider movements for tenure
     function onSliderMonthsChange(val) {
       const total = parseInt(val) || 1;
       state.totalMonths = total;
@@ -736,7 +852,6 @@
       const monthlyRate = state.R / 12 / 100;
       const totalMonths = state.totalMonths;
 
-      // Base Standard EMI Formula
       const emi = (state.P * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) / (Math.pow(1 + monthlyRate, totalMonths) - 1);
       const stdTotalPayment = emi * totalMonths;
       const stdTotalInterest = stdTotalPayment - state.P;
@@ -745,7 +860,6 @@
       document.getElementById('resStdInterest').innerText = formatLakhs(stdTotalInterest);
       document.getElementById('resStdTenure').innerText = formatDurationText(totalMonths);
 
-      // Month-by-month prepayment calculation loop
       let balance = state.P;
       let month = 0;
       let newTotalInterest = 0;
@@ -778,7 +892,6 @@
         periodInterest += interestComp;
         periodPrincipal += principalComp;
 
-        // Group by Year for long loans, or by Month for loans under 12 months
         const isShortLoan = totalMonths <= 12;
         if (isShortLoan || month % 12 === 0 || balance <= 1) {
           records.push({
@@ -811,7 +924,6 @@
         badge.style.display = 'none';
       }
 
-      // Progress split bar
       const totalSum = state.P + newTotalInterest;
       const pPercent = (state.P / totalSum) * 100;
       const iPercent = (newTotalInterest / totalSum) * 100;
