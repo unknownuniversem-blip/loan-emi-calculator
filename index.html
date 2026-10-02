@@ -117,13 +117,14 @@
       margin-bottom: 1.2rem;
     }
     .input-group {
-      margin-bottom: 1.2rem;
+      margin-bottom: 1.25rem;
     }
     .input-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
+      gap: 10px;
     }
     .input-header label {
       font-size: 0.8rem;
@@ -132,15 +133,34 @@
       text-transform: uppercase;
       letter-spacing: 0.03em;
     }
-    .input-display {
-      font-family: monospace;
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--primary);
+    .input-field-wrap {
+      display: inline-flex;
+      align-items: center;
       background: var(--card-inner);
-      padding: 4px 10px;
-      border-radius: 6px;
       border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2px 8px;
+      width: 170px;
+    }
+    .input-field-wrap:focus-within {
+      border-color: var(--border-focus);
+    }
+    .input-prefix {
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-right: 4px;
+    }
+    .editable-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 1rem;
+      font-family: monospace;
+      outline: none;
+      text-align: right;
     }
     input[type="range"] {
       width: 100%;
@@ -158,7 +178,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin-bottom: 0.8rem;
+      margin-top: 1rem;
     }
     input[type="number"], select {
       width: 100%;
@@ -357,28 +377,6 @@
       font-size: 0.75rem;
       color: var(--muted);
     }
-    #toast {
-      visibility: hidden;
-      min-width: 200px;
-      background-color: var(--accent);
-      color: #052e16;
-      text-align: center;
-      border-radius: 6px;
-      padding: 10px 16px;
-      position: fixed;
-      z-index: 2000;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-weight: 700;
-      font-size: 0.8rem;
-    }
-    #toast.show {
-      visibility: visible;
-      animation: fadein 0.3s, fadeout 0.3s 2.2s;
-    }
-    @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 24px; opacity: 1; } }
-    @keyframes fadeout { from { bottom: 24px; opacity: 1; } to { bottom: 0; opacity: 0; } }
   </style>
 </head>
 <body>
@@ -413,7 +411,7 @@
         <span class="brand-badge">Zero Leads</span>
       </div>
       <h1>Loan EMI & Prepayment Calculator</h1>
-      <p>Simulate extra monthly payments or annual bonuses to see how many years and lakhs in interest you can erase from home, car, or personal loans.</p>
+      <p>Type your exact figures or drag sliders to see how extra monthly prepayments or annual step-ups cut years and interest from your loan.</p>
     </header>
 
     <div class="calc-layout">
@@ -421,38 +419,50 @@
       <div>
         <div class="card">
           <div class="card-title">1. Basic Loan Parameters</div>
-          <div class="card-subtitle">Adjust sliders or type exact values</div>
+          <div class="card-subtitle">Type directly in input boxes or drag sliders</div>
 
+          <!-- LOAN AMOUNT -->
           <div class="input-group">
             <div class="input-header">
-              <label>Loan Amount (₹)</label>
-              <span class="input-display" id="dispAmount">₹30,00,000</span>
+              <label>Loan Amount (Principal)</label>
+              <div class="input-field-wrap">
+                <span class="input-prefix">₹</span>
+                <input type="number" id="txtAmount" class="editable-input" value="3000000" min="10000" max="100000000" step="10000" oninput="onBoxChange('amount', this.value)">
+              </div>
             </div>
-            <input type="range" id="rngAmount" min="100000" max="20000000" step="50000" value="3000000" oninput="syncInputs('amount', this.value)">
+            <input type="range" id="rngAmount" min="100000" max="20000000" step="25000" value="3000000" oninput="onSliderChange('amount', this.value)">
             <div class="range-limits">
               <span>₹1 Lakh</span>
               <span>₹2 Crore</span>
             </div>
           </div>
 
+          <!-- INTEREST RATE -->
           <div class="input-group">
             <div class="input-header">
               <label>Interest Rate (% P.A.)</label>
-              <span class="input-display" id="dispRate">8.5%</span>
+              <div class="input-field-wrap" style="width:130px;">
+                <input type="number" id="txtRate" class="editable-input" value="8.5" min="1" max="40" step="0.05" oninput="onBoxChange('rate', this.value)">
+                <span class="input-prefix" style="margin-left:4px; margin-right:0;">%</span>
+              </div>
             </div>
-            <input type="range" id="rngRate" min="5" max="20" step="0.1" value="8.5" oninput="syncInputs('rate', this.value)">
+            <input type="range" id="rngRate" min="5" max="20" step="0.05" value="8.5" oninput="onSliderChange('rate', this.value)">
             <div class="range-limits">
               <span>5%</span>
               <span>20%</span>
             </div>
           </div>
 
+          <!-- TENURE -->
           <div class="input-group" style="margin-bottom:0.5rem;">
             <div class="input-header">
-              <label>Loan Tenure (Years)</label>
-              <span class="input-display" id="dispTenure">20 Years</span>
+              <label>Loan Duration (Tenure)</label>
+              <div class="input-field-wrap" style="width:150px;">
+                <input type="number" id="txtTenure" class="editable-input" value="20" min="1" max="40" step="1" oninput="onBoxChange('tenure', this.value)">
+                <span class="input-prefix" style="margin-left:4px; margin-right:0;">Yrs</span>
+              </div>
             </div>
-            <input type="range" id="rngTenure" min="1" max="30" step="1" value="20" oninput="syncInputs('tenure', this.value)">
+            <input type="range" id="rngTenure" min="1" max="30" step="1" value="20" oninput="onSliderChange('tenure', this.value)">
             <div class="range-limits">
               <span>1 Year</span>
               <span>30 Years</span>
@@ -464,12 +474,16 @@
           <div class="card-title" style="color:var(--accent);">2. Smart Prepayment Simulator</div>
           <div class="card-subtitle">Pay just a little extra to save massive interest</div>
 
+          <!-- EXTRA MONTHLY PREPAYMENT -->
           <div class="input-group">
             <div class="input-header">
-              <label>Extra Monthly Prepayment (₹)</label>
-              <span class="input-display" id="dispPrepay" style="color:var(--accent);">+₹5,000 / mo</span>
+              <label>Extra Monthly Prepayment</label>
+              <div class="input-field-wrap">
+                <span class="input-prefix" style="color:var(--accent);">+₹</span>
+                <input type="number" id="txtPrepay" class="editable-input" style="color:var(--accent);" value="5000" min="0" max="500000" step="500" oninput="onBoxChange('prepay', this.value)">
+              </div>
             </div>
-            <input type="range" id="rngPrepay" min="0" max="50000" step="1000" value="5000" oninput="syncInputs('prepay', this.value)">
+            <input type="range" id="rngPrepay" min="0" max="50000" step="500" value="5000" oninput="onSliderChange('prepay', this.value)" style="accent-color:var(--accent);">
             <div class="range-limits">
               <span>₹0</span>
               <span>₹50,000 / month</span>
@@ -479,7 +493,7 @@
           <div class="number-input-row">
             <div>
               <label style="font-size:0.75rem; font-weight:700; color:var(--muted); text-transform:uppercase;">Annual Lump-Sum (₹)</label>
-              <input type="number" id="inputLumpSum" placeholder="e.g. 50000" value="0" oninput="calculateLoan()">
+              <input type="number" id="inputLumpSum" placeholder="e.g. 50000" value="0" min="0" step="5000" oninput="calculateLoan()">
             </div>
             <div>
               <label style="font-size:0.75rem; font-weight:700; color:var(--muted); text-transform:uppercase;">Annual EMI Step-Up (%)</label>
@@ -579,8 +593,6 @@
     </footer>
   </div>
 
-  <div id="toast">Calculation link copied to clipboard!</div>
-
   <script>
     let state = {
       P: 3000000,
@@ -605,20 +617,40 @@
       return formatInr(val);
     }
 
-    function syncInputs(key, val) {
+    // Called when user drags SLIDER
+    function onSliderChange(field, val) {
       val = parseFloat(val);
-      if (key === 'amount') {
+      if (field === 'amount') {
         state.P = val;
-        document.getElementById('dispAmount').innerText = formatInr(val);
-      } else if (key === 'rate') {
+        document.getElementById('txtAmount').value = val;
+      } else if (field === 'rate') {
         state.R = val;
-        document.getElementById('dispRate').innerText = val.toFixed(1) + '%';
-      } else if (key === 'tenure') {
+        document.getElementById('txtRate').value = val;
+      } else if (field === 'tenure') {
         state.N = val;
-        document.getElementById('dispTenure').innerText = val + ' Years';
-      } else if (key === 'prepay') {
+        document.getElementById('txtTenure').value = val;
+      } else if (field === 'prepay') {
         state.extraMonthly = val;
-        document.getElementById('dispPrepay').innerText = '+' + formatInr(val) + ' / mo';
+        document.getElementById('txtPrepay').value = val;
+      }
+      calculateLoan();
+    }
+
+    // Called when user TYPES directly in INPUT BOX
+    function onBoxChange(field, val) {
+      val = parseFloat(val) || 0;
+      if (field === 'amount') {
+        state.P = val;
+        document.getElementById('rngAmount').value = val;
+      } else if (field === 'rate') {
+        state.R = val;
+        document.getElementById('rngRate').value = val;
+      } else if (field === 'tenure') {
+        state.N = val;
+        document.getElementById('rngTenure').value = val;
+      } else if (field === 'prepay') {
+        state.extraMonthly = val;
+        document.getElementById('rngPrepay').value = val;
       }
       calculateLoan();
     }
@@ -626,6 +658,11 @@
     function calculateLoan() {
       state.annualLump = parseFloat(document.getElementById('inputLumpSum').value) || 0;
       state.stepUp = parseFloat(document.getElementById('selectStepUp').value) || 0;
+
+      if (state.P <= 0 || state.R <= 0 || state.N <= 0) {
+        document.getElementById('resEmi').innerText = '₹0';
+        return;
+      }
 
       const monthlyRate = state.R / 12 / 100;
       const totalMonths = state.N * 12;
@@ -639,7 +676,7 @@
       document.getElementById('resStdInterest').innerText = formatLakhs(stdTotalInterest);
       document.getElementById('resStdTenure').innerText = `${totalMonths} Mo (${state.N} Yrs)`;
 
-      // Prepayment Simulation (Month-by-Month amortization loop)
+      // Month-by-month prepayment calculation loop
       let balance = state.P;
       let month = 0;
       let newTotalInterest = 0;
@@ -651,7 +688,6 @@
       while (balance > 1 && month < totalMonths) {
         month++;
         
-        // Annual Step-up logic
         if (state.stepUp > 0 && month > 1 && month % 12 === 1) {
           currentEmi = currentEmi * (1 + state.stepUp / 100);
         }
@@ -659,7 +695,6 @@
         const interestComp = balance * monthlyRate;
         let principalComp = currentEmi - interestComp + state.extraMonthly;
 
-        // Annual lump-sum
         if (state.annualLump > 0 && month % 12 === 0) {
           principalComp += state.annualLump;
         }
@@ -703,7 +738,7 @@
         badge.style.display = 'none';
       }
 
-      // Visual Split Bar
+      // Progress Split Bar
       const totalSum = state.P + newTotalInterest;
       const pPercent = (state.P / totalSum) * 100;
       const iPercent = (newTotalInterest / totalSum) * 100;
