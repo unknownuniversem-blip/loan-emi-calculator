@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>Smart Loan EMI & Prepayment Calculator - Save Lakhs in Interest</title>
-  <meta name="description" content="Calculate monthly EMI with Years/Months toggle, simulate extra monthly prepayments or annual lump-sums, and see how many years and lakhs in interest you can save. 100% private, client-side.">
+  <meta name="description" content="Calculate monthly EMI with mixed Years + Months duration, simulate extra monthly prepayments or annual lump-sums, and see how much interest you save. 100% private.">
 
   <!-- Dynamic SVG Favicon -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f172a' stroke='%2338bdf8' stroke-width='1.5'/%3E%3Cpath d='M16 6v20M10 11c0-2.2 2.7-4 6-4s6 1.8 6 4-2.7 3.5-6 4-6 1.8-6 4 2.7 4 6 4 6-1.8 6-4' stroke='%2310b981' stroke-width='2.2' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
@@ -141,7 +141,7 @@
       border: 1.5px solid var(--border);
       border-radius: 9px;
       padding: 8px 14px;
-      min-width: 185px;
+      min-width: 175px;
       transition: all 0.2s ease;
     }
     .input-field-wrap:focus-within {
@@ -167,29 +167,40 @@
       text-align: right;
       padding: 0 4px;
     }
-    /* Unit Switcher Pills (Years vs Months) */
-    .unit-switch-pills {
+    /* Mixed Duration Box (Years + Months) */
+    .mixed-tenure-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tenure-cell {
       display: inline-flex;
-      background: #090f1d;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 2px;
-      margin-left: 8px;
+      align-items: center;
+      background: var(--card-inner);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 10px;
+      width: 105px;
     }
-    .unit-pill {
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 4px;
-      border: none;
+    .tenure-cell:focus-within {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.15);
+    }
+    .tenure-cell input {
+      width: 100%;
       background: transparent;
-      color: var(--muted);
-      cursor: pointer;
-      transition: all 0.15s ease;
+      border: none;
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      text-align: right;
+      outline: none;
+      padding-right: 4px;
     }
-    .unit-pill.active {
-      background: var(--primary);
-      color: #0b1120;
+    .tenure-cell span {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-weight: 600;
     }
     input[type="range"] {
       width: 100%;
@@ -438,7 +449,7 @@
         <span class="brand-badge">Zero Leads</span>
       </div>
       <h1>Loan EMI & Prepayment Calculator</h1>
-      <p>Calculate your exact monthly EMI, toggle years or months, and simulate how small extra payments save lakhs in interest.</p>
+      <p>Simulate loans down to 1 month or feed combined Years + Months. See how extra monthly payments save lakhs in interest.</p>
     </header>
 
     <div class="calc-layout">
@@ -454,12 +465,12 @@
               <label>Loan Amount (Principal)</label>
               <div class="input-field-wrap">
                 <span class="input-prefix">₹</span>
-                <input type="number" id="txtAmount" class="editable-input" value="3000000" min="10000" max="100000000" step="10000" oninput="onBoxChange('amount', this.value)">
+                <input type="number" id="txtAmount" class="editable-input" value="3000000" min="1000" max="100000000" step="5000" oninput="onBoxChange('amount', this.value)">
               </div>
             </div>
-            <input type="range" id="rngAmount" min="100000" max="20000000" step="25000" value="3000000" oninput="onSliderChange('amount', this.value)">
+            <input type="range" id="rngAmount" min="50000" max="20000000" step="25000" value="3000000" oninput="onSliderChange('amount', this.value)">
             <div class="range-limits">
-              <span>₹1 Lakh</span>
+              <span>₹50,000</span>
               <span>₹2 Crore</span>
             </div>
           </div>
@@ -469,36 +480,36 @@
             <div class="input-header">
               <label>Interest Rate (% P.A.)</label>
               <div class="input-field-wrap" style="min-width:140px;">
-                <input type="number" id="txtRate" class="editable-input" value="8.5" min="1" max="40" step="0.05" oninput="onBoxChange('rate', this.value)">
+                <input type="number" id="txtRate" class="editable-input" value="8.5" min="0.1" max="50" step="0.05" oninput="onBoxChange('rate', this.value)">
                 <span class="input-prefix" style="margin-left:8px; margin-right:0;">%</span>
               </div>
             </div>
-            <input type="range" id="rngRate" min="5" max="20" step="0.05" value="8.5" oninput="onSliderChange('rate', this.value)">
+            <input type="range" id="rngRate" min="4" max="24" step="0.05" value="8.5" oninput="onSliderChange('rate', this.value)">
             <div class="range-limits">
-              <span>5%</span>
-              <span>20%</span>
+              <span>4%</span>
+              <span>24%</span>
             </div>
           </div>
 
-          <!-- TENURE (WITH YEARS / MONTHS TOGGLE) -->
+          <!-- MIXED TENURE (YEARS + MONTHS) -->
           <div class="input-group" style="margin-bottom:0.5rem;">
             <div class="input-header">
-              <div style="display:flex; align-items:center;">
-                <label>Loan Tenure</label>
-                <div class="unit-switch-pills">
-                  <button type="button" class="unit-pill active" id="pillYears" onclick="setTenureUnit('years')">Years</button>
-                  <button type="button" class="unit-pill" id="pillMonths" onclick="setTenureUnit('months')">Months</button>
+              <label>Loan Duration (Years + Months)</label>
+              <div class="mixed-tenure-box">
+                <div class="tenure-cell">
+                  <input type="number" id="txtYears" value="20" min="0" max="40" step="1" oninput="onMixedTenureChange()">
+                  <span>Yrs</span>
+                </div>
+                <div class="tenure-cell">
+                  <input type="number" id="txtMonths" value="0" min="0" max="11" step="1" oninput="onMixedTenureChange()">
+                  <span>Mo</span>
                 </div>
               </div>
-              <div class="input-field-wrap" style="min-width:140px;">
-                <input type="number" id="txtTenure" class="editable-input" value="20" min="1" max="480" step="1" oninput="onBoxChange('tenure', this.value)">
-                <span class="input-prefix" id="lblTenureUnit" style="margin-left:8px; margin-right:0;">Yrs</span>
-              </div>
             </div>
-            <input type="range" id="rngTenure" min="1" max="30" step="1" value="20" oninput="onSliderChange('tenure', this.value)">
+            <input type="range" id="rngTenureMonths" min="1" max="360" step="1" value="240" oninput="onSliderMonthsChange(this.value)">
             <div class="range-limits">
-              <span id="lblMinTenure">1 Year</span>
-              <span id="lblMaxTenure">30 Years</span>
+              <span>1 Month (Min)</span>
+              <span>30 Years (360 Mo)</span>
             </div>
           </div>
         </div>
@@ -562,11 +573,11 @@
             </div>
             <div class="stat-card">
               <span>Original Tenure</span>
-              <strong id="resStdTenure">240 Months (20 Yrs)</strong>
+              <strong id="resStdTenure">240 Months</strong>
             </div>
             <div class="stat-card" style="border-color:rgba(16,185,129,0.3);">
               <span>New Payoff Timeline</span>
-              <strong id="resNewTenure" style="color:var(--accent);">170 Months (14.2 Yrs)</strong>
+              <strong id="resNewTenure" style="color:var(--accent);">170 Months</strong>
             </div>
           </div>
 
@@ -588,7 +599,7 @@
             <table>
               <thead>
                 <tr>
-                  <th>Year</th>
+                  <th>Period</th>
                   <th>Principal Paid</th>
                   <th>Interest Paid</th>
                   <th>Balance Left</th>
@@ -631,7 +642,6 @@
       P: 3000000,
       R: 8.5,
       totalMonths: 240,
-      tenureUnit: 'years',
       extraMonthly: 5000,
       annualLump: 0,
       stepUp: 0
@@ -651,37 +661,36 @@
       return formatInr(val);
     }
 
-    // Toggle between Years and Months
-    function setTenureUnit(unit) {
-      state.tenureUnit = unit;
-      const pillY = document.getElementById('pillYears');
-      const pillM = document.getElementById('pillMonths');
-      const lblUnit = document.getElementById('lblTenureUnit');
-      const txtT = document.getElementById('txtTenure');
-      const rngT = document.getElementById('rngTenure');
-      const minLbl = document.getElementById('lblMinTenure');
-      const maxLbl = document.getElementById('lblMaxTenure');
+    function formatDurationText(totalM) {
+      const y = Math.floor(totalM / 12);
+      const m = totalM % 12;
+      if (y === 0) return `${m} Mo`;
+      if (m === 0) return `${totalM} Mo (${y} Yrs)`;
+      return `${totalM} Mo (${y}y ${m}m)`;
+    }
 
-      if (unit === 'years') {
-        pillY.classList.add('active');
-        pillM.classList.remove('active');
-        lblUnit.innerText = 'Yrs';
-        const yrs = Math.max(1, Math.round(state.totalMonths / 12));
-        txtT.value = yrs;
-        rngT.min = 1; rngT.max = 30; rngT.step = 1;
-        rngT.value = Math.min(30, yrs);
-        minLbl.innerText = '1 Year';
-        maxLbl.innerText = '30 Years';
-      } else {
-        pillM.classList.add('active');
-        pillY.classList.remove('active');
-        lblUnit.innerText = 'Mo';
-        txtT.value = state.totalMonths;
-        rngT.min = 6; rngT.max = 360; rngT.step = 6;
-        rngT.value = Math.min(360, state.totalMonths);
-        minLbl.innerText = '6 Months';
-        maxLbl.innerText = '360 Months';
-      }
+    // Handles user typing in Years or Months input cells
+    function onMixedTenureChange() {
+      const y = parseInt(document.getElementById('txtYears').value) || 0;
+      const m = parseInt(document.getElementById('txtMonths').value) || 0;
+      let total = (y * 12) + m;
+      if (total < 1) total = 1; // Minimum allowed duration is 1 month
+
+      state.totalMonths = total;
+      document.getElementById('rngTenureMonths').value = Math.min(360, total);
+      calculateLoan();
+    }
+
+    // Handles slider movements for tenure
+    function onSliderMonthsChange(val) {
+      const total = parseInt(val) || 1;
+      state.totalMonths = total;
+
+      const y = Math.floor(total / 12);
+      const m = total % 12;
+
+      document.getElementById('txtYears').value = y;
+      document.getElementById('txtMonths').value = m;
       calculateLoan();
     }
 
@@ -693,14 +702,6 @@
       } else if (field === 'rate') {
         state.R = val;
         document.getElementById('txtRate').value = val;
-      } else if (field === 'tenure') {
-        if (state.tenureUnit === 'years') {
-          state.totalMonths = Math.round(val * 12);
-          document.getElementById('txtTenure').value = val;
-        } else {
-          state.totalMonths = Math.round(val);
-          document.getElementById('txtTenure').value = val;
-        }
       } else if (field === 'prepay') {
         state.extraMonthly = val;
         document.getElementById('txtPrepay').value = val;
@@ -716,14 +717,6 @@
       } else if (field === 'rate') {
         state.R = val;
         document.getElementById('rngRate').value = val;
-      } else if (field === 'tenure') {
-        if (state.tenureUnit === 'years') {
-          state.totalMonths = Math.round(val * 12);
-          document.getElementById('rngTenure').value = Math.min(30, val);
-        } else {
-          state.totalMonths = Math.round(val);
-          document.getElementById('rngTenure').value = Math.min(360, val);
-        }
       } else if (field === 'prepay') {
         state.extraMonthly = val;
         document.getElementById('rngPrepay').value = val;
@@ -743,24 +736,23 @@
       const monthlyRate = state.R / 12 / 100;
       const totalMonths = state.totalMonths;
 
-      // Base Standard EMI: P * r * (1+r)^n / ((1+r)^n - 1)
+      // Base Standard EMI Formula
       const emi = (state.P * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) / (Math.pow(1 + monthlyRate, totalMonths) - 1);
       const stdTotalPayment = emi * totalMonths;
       const stdTotalInterest = stdTotalPayment - state.P;
 
-      const yrsDisplay = (totalMonths / 12).toFixed(1).replace('.0', '');
       document.getElementById('resEmi').innerText = formatInr(emi);
       document.getElementById('resStdInterest').innerText = formatLakhs(stdTotalInterest);
-      document.getElementById('resStdTenure').innerText = `${totalMonths} Mo (${yrsDisplay} Yrs)`;
+      document.getElementById('resStdTenure').innerText = formatDurationText(totalMonths);
 
       // Month-by-month prepayment calculation loop
       let balance = state.P;
       let month = 0;
       let newTotalInterest = 0;
       let currentEmi = emi;
-      const yearlyRecords = [];
-      let yearInterest = 0;
-      let yearPrincipal = 0;
+      const records = [];
+      let periodInterest = 0;
+      let periodPrincipal = 0;
 
       while (balance > 1 && month < totalMonths) {
         month++;
@@ -783,18 +775,20 @@
         newTotalInterest += interestComp;
         balance -= principalComp;
 
-        yearInterest += interestComp;
-        yearPrincipal += principalComp;
+        periodInterest += interestComp;
+        periodPrincipal += principalComp;
 
-        if (month % 12 === 0 || balance <= 1) {
-          yearlyRecords.push({
-            year: Math.ceil(month / 12),
-            principal: yearPrincipal,
-            interest: yearInterest,
+        // Group by Year for long loans, or by Month for loans under 12 months
+        const isShortLoan = totalMonths <= 12;
+        if (isShortLoan || month % 12 === 0 || balance <= 1) {
+          records.push({
+            label: isShortLoan ? `Month ${month}` : `Year ${Math.ceil(month / 12)}`,
+            principal: periodPrincipal,
+            interest: periodInterest,
             balance: Math.max(0, balance)
           });
-          yearInterest = 0;
-          yearPrincipal = 0;
+          periodInterest = 0;
+          periodPrincipal = 0;
         }
 
         if (balance <= 1) break;
@@ -802,27 +796,29 @@
 
       const interestSaved = Math.max(0, stdTotalInterest - newTotalInterest);
       const monthsSaved = totalMonths - month;
-      const yearsSaved = (monthsSaved / 12).toFixed(1);
 
       document.getElementById('resNewInterest').innerText = formatLakhs(newTotalInterest);
-      document.getElementById('resNewTenure').innerText = `${month} Mo (${(month/12).toFixed(1)} Yrs)`;
+      document.getElementById('resNewTenure').innerText = formatDurationText(month);
 
       const badge = document.getElementById('savingsBadge');
-      if (interestSaved > 5000 && monthsSaved > 0) {
+      if (interestSaved > 500 && monthsSaved > 0) {
+        const savedText = monthsSaved >= 12 
+          ? `${(monthsSaved / 12).toFixed(1)} Yrs Early` 
+          : `${monthsSaved} Mo Early`;
         badge.style.display = 'inline-flex';
-        badge.innerText = `🎉 Saves ${formatLakhs(interestSaved)} & Ends ${yearsSaved} Yrs Early!`;
+        badge.innerText = `🎉 Saves ${formatLakhs(interestSaved)} & Ends ${savedText}!`;
       } else {
         badge.style.display = 'none';
       }
 
-      // Visual split bar
+      // Progress split bar
       const totalSum = state.P + newTotalInterest;
       const pPercent = (state.P / totalSum) * 100;
       const iPercent = (newTotalInterest / totalSum) * 100;
       document.getElementById('barPrincipal').style.width = pPercent + '%';
       document.getElementById('barInterest').style.width = iPercent + '%';
 
-      renderTable(yearlyRecords);
+      renderTable(records);
     }
 
     function renderTable(records) {
@@ -831,7 +827,7 @@
       records.forEach(r => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>Year ${r.year}</td>
+          <td>${r.label}</td>
           <td style="color:var(--primary);">${formatInr(r.principal)}</td>
           <td style="color:#f59e0b;">${formatInr(r.interest)}</td>
           <td>${formatInr(r.balance)}</td>
