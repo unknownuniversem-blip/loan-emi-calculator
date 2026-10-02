@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>Smart Loan EMI & Prepayment Calculator - Save Lakhs in Interest</title>
-  <meta name="description" content="Calculate monthly EMI, simulate extra monthly prepayments or annual lump-sums, and see how many years and lakhs in interest you can save. 100% private, client-side.">
+  <meta name="description" content="Calculate monthly EMI with Years/Months toggle, simulate extra monthly prepayments or annual lump-sums, and see how many years and lakhs in interest you can save. 100% private, client-side.">
 
   <!-- Dynamic SVG Favicon -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f172a' stroke='%2338bdf8' stroke-width='1.5'/%3E%3Cpath d='M16 6v20M10 11c0-2.2 2.7-4 6-4s6 1.8 6 4-2.7 3.5-6 4-6 1.8-6 4 2.7 4 6 4 6-1.8 6-4' stroke='%2310b981' stroke-width='2.2' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
@@ -117,50 +117,79 @@
       margin-bottom: 1.2rem;
     }
     .input-group {
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.35rem;
     }
     .input-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       gap: 10px;
     }
     .input-header label {
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       font-weight: 700;
       color: var(--muted);
       text-transform: uppercase;
       letter-spacing: 0.03em;
     }
+    /* SPACIOUS CLEAR-VIEW INPUT BOXES */
     .input-field-wrap {
       display: inline-flex;
       align-items: center;
       background: var(--card-inner);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 2px 8px;
-      width: 170px;
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      padding: 8px 14px;
+      min-width: 185px;
+      transition: all 0.2s ease;
     }
     .input-field-wrap:focus-within {
       border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
     }
     .input-prefix {
       color: var(--muted);
       font-weight: 700;
-      font-size: 0.85rem;
-      margin-right: 4px;
+      font-size: 0.95rem;
+      margin-right: 8px;
+      user-select: none;
     }
     .editable-input {
       width: 100%;
       background: transparent;
       border: none;
-      color: var(--primary);
+      color: #fff;
       font-weight: 700;
-      font-size: 1rem;
-      font-family: monospace;
+      font-size: 1.05rem;
+      font-family: system-ui, -apple-system, monospace;
       outline: none;
       text-align: right;
+      padding: 0 4px;
+    }
+    /* Unit Switcher Pills (Years vs Months) */
+    .unit-switch-pills {
+      display: inline-flex;
+      background: #090f1d;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2px;
+      margin-left: 8px;
+    }
+    .unit-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .unit-pill.active {
+      background: var(--primary);
+      color: #0b1120;
     }
     input[type="range"] {
       width: 100%;
@@ -177,14 +206,14 @@
     .number-input-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 12px;
       margin-top: 1rem;
     }
     input[type="number"], select {
       width: 100%;
-      padding: 10px 12px;
+      padding: 10px 14px;
       background: var(--card-inner);
-      border: 1px solid var(--border);
+      border: 1.5px solid var(--border);
       border-radius: 8px;
       color: var(--text);
       font-size: 0.95rem;
@@ -305,7 +334,6 @@
       cursor: pointer;
     }
     .btn-secondary:hover { color: #fff; border-color: var(--muted); }
-    /* Amortization Table */
     .table-container {
       max-height: 280px;
       overflow-y: auto;
@@ -331,7 +359,6 @@
       font-weight: 700;
     }
     td:first-child, th:first-child { text-align: left; }
-    /* Ecosystem Section */
     .ecosystem-section {
       margin-top: 2.5rem;
       border-top: 1px solid var(--border);
@@ -411,15 +438,15 @@
         <span class="brand-badge">Zero Leads</span>
       </div>
       <h1>Loan EMI & Prepayment Calculator</h1>
-      <p>Type your exact figures or drag sliders to see how extra monthly prepayments or annual step-ups cut years and interest from your loan.</p>
+      <p>Calculate your exact monthly EMI, toggle years or months, and simulate how small extra payments save lakhs in interest.</p>
     </header>
 
     <div class="calc-layout">
       <!-- INPUTS COLUMN -->
       <div>
         <div class="card">
-          <div class="card-title">1. Basic Loan Parameters</div>
-          <div class="card-subtitle">Type directly in input boxes or drag sliders</div>
+          <div class="card-title">1. Loan Terms</div>
+          <div class="card-subtitle">Type directly into the inputs or drag the sliders</div>
 
           <!-- LOAN AMOUNT -->
           <div class="input-group">
@@ -441,9 +468,9 @@
           <div class="input-group">
             <div class="input-header">
               <label>Interest Rate (% P.A.)</label>
-              <div class="input-field-wrap" style="width:130px;">
+              <div class="input-field-wrap" style="min-width:140px;">
                 <input type="number" id="txtRate" class="editable-input" value="8.5" min="1" max="40" step="0.05" oninput="onBoxChange('rate', this.value)">
-                <span class="input-prefix" style="margin-left:4px; margin-right:0;">%</span>
+                <span class="input-prefix" style="margin-left:8px; margin-right:0;">%</span>
               </div>
             </div>
             <input type="range" id="rngRate" min="5" max="20" step="0.05" value="8.5" oninput="onSliderChange('rate', this.value)">
@@ -453,19 +480,25 @@
             </div>
           </div>
 
-          <!-- TENURE -->
+          <!-- TENURE (WITH YEARS / MONTHS TOGGLE) -->
           <div class="input-group" style="margin-bottom:0.5rem;">
             <div class="input-header">
-              <label>Loan Duration (Tenure)</label>
-              <div class="input-field-wrap" style="width:150px;">
-                <input type="number" id="txtTenure" class="editable-input" value="20" min="1" max="40" step="1" oninput="onBoxChange('tenure', this.value)">
-                <span class="input-prefix" style="margin-left:4px; margin-right:0;">Yrs</span>
+              <div style="display:flex; align-items:center;">
+                <label>Loan Tenure</label>
+                <div class="unit-switch-pills">
+                  <button type="button" class="unit-pill active" id="pillYears" onclick="setTenureUnit('years')">Years</button>
+                  <button type="button" class="unit-pill" id="pillMonths" onclick="setTenureUnit('months')">Months</button>
+                </div>
+              </div>
+              <div class="input-field-wrap" style="min-width:140px;">
+                <input type="number" id="txtTenure" class="editable-input" value="20" min="1" max="480" step="1" oninput="onBoxChange('tenure', this.value)">
+                <span class="input-prefix" id="lblTenureUnit" style="margin-left:8px; margin-right:0;">Yrs</span>
               </div>
             </div>
             <input type="range" id="rngTenure" min="1" max="30" step="1" value="20" oninput="onSliderChange('tenure', this.value)">
             <div class="range-limits">
-              <span>1 Year</span>
-              <span>30 Years</span>
+              <span id="lblMinTenure">1 Year</span>
+              <span id="lblMaxTenure">30 Years</span>
             </div>
           </div>
         </div>
@@ -597,7 +630,8 @@
     let state = {
       P: 3000000,
       R: 8.5,
-      N: 20,
+      totalMonths: 240,
+      tenureUnit: 'years',
       extraMonthly: 5000,
       annualLump: 0,
       stepUp: 0
@@ -617,7 +651,40 @@
       return formatInr(val);
     }
 
-    // Called when user drags SLIDER
+    // Toggle between Years and Months
+    function setTenureUnit(unit) {
+      state.tenureUnit = unit;
+      const pillY = document.getElementById('pillYears');
+      const pillM = document.getElementById('pillMonths');
+      const lblUnit = document.getElementById('lblTenureUnit');
+      const txtT = document.getElementById('txtTenure');
+      const rngT = document.getElementById('rngTenure');
+      const minLbl = document.getElementById('lblMinTenure');
+      const maxLbl = document.getElementById('lblMaxTenure');
+
+      if (unit === 'years') {
+        pillY.classList.add('active');
+        pillM.classList.remove('active');
+        lblUnit.innerText = 'Yrs';
+        const yrs = Math.max(1, Math.round(state.totalMonths / 12));
+        txtT.value = yrs;
+        rngT.min = 1; rngT.max = 30; rngT.step = 1;
+        rngT.value = Math.min(30, yrs);
+        minLbl.innerText = '1 Year';
+        maxLbl.innerText = '30 Years';
+      } else {
+        pillM.classList.add('active');
+        pillY.classList.remove('active');
+        lblUnit.innerText = 'Mo';
+        txtT.value = state.totalMonths;
+        rngT.min = 6; rngT.max = 360; rngT.step = 6;
+        rngT.value = Math.min(360, state.totalMonths);
+        minLbl.innerText = '6 Months';
+        maxLbl.innerText = '360 Months';
+      }
+      calculateLoan();
+    }
+
     function onSliderChange(field, val) {
       val = parseFloat(val);
       if (field === 'amount') {
@@ -627,8 +694,13 @@
         state.R = val;
         document.getElementById('txtRate').value = val;
       } else if (field === 'tenure') {
-        state.N = val;
-        document.getElementById('txtTenure').value = val;
+        if (state.tenureUnit === 'years') {
+          state.totalMonths = Math.round(val * 12);
+          document.getElementById('txtTenure').value = val;
+        } else {
+          state.totalMonths = Math.round(val);
+          document.getElementById('txtTenure').value = val;
+        }
       } else if (field === 'prepay') {
         state.extraMonthly = val;
         document.getElementById('txtPrepay').value = val;
@@ -636,7 +708,6 @@
       calculateLoan();
     }
 
-    // Called when user TYPES directly in INPUT BOX
     function onBoxChange(field, val) {
       val = parseFloat(val) || 0;
       if (field === 'amount') {
@@ -646,8 +717,13 @@
         state.R = val;
         document.getElementById('rngRate').value = val;
       } else if (field === 'tenure') {
-        state.N = val;
-        document.getElementById('rngTenure').value = val;
+        if (state.tenureUnit === 'years') {
+          state.totalMonths = Math.round(val * 12);
+          document.getElementById('rngTenure').value = Math.min(30, val);
+        } else {
+          state.totalMonths = Math.round(val);
+          document.getElementById('rngTenure').value = Math.min(360, val);
+        }
       } else if (field === 'prepay') {
         state.extraMonthly = val;
         document.getElementById('rngPrepay').value = val;
@@ -659,22 +735,23 @@
       state.annualLump = parseFloat(document.getElementById('inputLumpSum').value) || 0;
       state.stepUp = parseFloat(document.getElementById('selectStepUp').value) || 0;
 
-      if (state.P <= 0 || state.R <= 0 || state.N <= 0) {
+      if (state.P <= 0 || state.R <= 0 || state.totalMonths <= 0) {
         document.getElementById('resEmi').innerText = '₹0';
         return;
       }
 
       const monthlyRate = state.R / 12 / 100;
-      const totalMonths = state.N * 12;
+      const totalMonths = state.totalMonths;
 
-      // Base Standard EMI formula: P * r * (1+r)^n / ((1+r)^n - 1)
+      // Base Standard EMI: P * r * (1+r)^n / ((1+r)^n - 1)
       const emi = (state.P * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) / (Math.pow(1 + monthlyRate, totalMonths) - 1);
       const stdTotalPayment = emi * totalMonths;
       const stdTotalInterest = stdTotalPayment - state.P;
 
+      const yrsDisplay = (totalMonths / 12).toFixed(1).replace('.0', '');
       document.getElementById('resEmi').innerText = formatInr(emi);
       document.getElementById('resStdInterest').innerText = formatLakhs(stdTotalInterest);
-      document.getElementById('resStdTenure').innerText = `${totalMonths} Mo (${state.N} Yrs)`;
+      document.getElementById('resStdTenure').innerText = `${totalMonths} Mo (${yrsDisplay} Yrs)`;
 
       // Month-by-month prepayment calculation loop
       let balance = state.P;
@@ -738,7 +815,7 @@
         badge.style.display = 'none';
       }
 
-      // Progress Split Bar
+      // Visual split bar
       const totalSum = state.P + newTotalInterest;
       const pPercent = (state.P / totalSum) * 100;
       const iPercent = (newTotalInterest / totalSum) * 100;
