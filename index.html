@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>Smart Loan EMI & Prepayment Calculator - Save Lakhs in Interest</title>
-  <meta name="description" content="Calculate monthly EMI with mixed Years + Months duration, spacious tactile plus/minus steppers, and prepayment savings simulator. 100% private.">
+  <meta name="description" content="Calculate standard and No-Cost 0% EMI with mixed Years + Months duration, spacious tactile steppers, and prepayment savings simulator. 100% private.">
 
   <!-- Dynamic SVG Favicon -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f172a' stroke='%2338bdf8' stroke-width='1.5'/%3E%3Cpath d='M16 6v20M10 11c0-2.2 2.7-4 6-4s6 1.8 6 4-2.7 3.5-6 4-6 1.8-6 4 2.7 4 6 4 6-1.8 6-4' stroke='%2310b981' stroke-width='2.2' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
@@ -32,7 +32,7 @@
       word-break: break-word;
       overflow-wrap: anywhere;
     }
-    /* HIDE DEFAULT CRAMPED BROWSER ARROWS */
+    /* Disable default cramped browser spinners */
     input[type="number"]::-webkit-inner-spin-button,
     input[type="number"]::-webkit-outer-spin-button {
       -webkit-appearance: none;
@@ -145,7 +145,7 @@
       letter-spacing: 0.03em;
     }
 
-    /* CUSTOM STEPPER CONTROLS WITH AMPLE BREATHING ROOM */
+    /* STEPPERS WITH CLEAN SPACING */
     .stepper-container {
       display: inline-flex;
       align-items: center;
@@ -210,7 +210,7 @@
       padding: 0 6px;
     }
 
-    /* MIXED TENURE CELLS WITH SEPARATE BUTTONS */
+    /* MIXED TENURE CELLS */
     .mixed-tenure-box {
       display: flex;
       align-items: center;
@@ -254,6 +254,18 @@
       width: 24px;
       height: 28px;
       font-size: 0.95rem;
+    }
+
+    .no-cost-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--accent);
+      cursor: pointer;
+      margin-left: 6px;
     }
 
     input[type="range"] {
@@ -503,7 +515,7 @@
         <span class="brand-badge">Zero Leads</span>
       </div>
       <h1>Loan EMI & Prepayment Calculator</h1>
-      <p>Clean spacious number inputs with separated plus/minus controls. Easily calculate mixed Years + Months and simulate interest-cutting prepayments.</p>
+      <p>Clean spacious number inputs with dedicated steppers. Handles standard loans as well as 0% No-Cost EMI and mixed Years + Months.</p>
     </header>
 
     <div class="calc-layout">
@@ -521,34 +533,37 @@
                 <button type="button" class="step-btn" onclick="stepVal('amount', -50000)">−</button>
                 <div class="input-field-wrap">
                   <span class="input-prefix">₹</span>
-                  <input type="number" id="txtAmount" class="editable-input" value="3000000" min="1000" max="100000000" step="10000" oninput="onBoxChange('amount', this.value)">
+                  <input type="number" id="txtAmount" class="editable-input" value="3000000" min="500" max="100000000" step="10000" oninput="onBoxChange('amount', this.value)">
                 </div>
                 <button type="button" class="step-btn" onclick="stepVal('amount', 50000)">+</button>
               </div>
             </div>
-            <input type="range" id="rngAmount" min="50000" max="20000000" step="25000" value="3000000" oninput="onSliderChange('amount', this.value)">
+            <input type="range" id="rngAmount" min="5000" max="20000000" step="5000" value="3000000" oninput="onSliderChange('amount', this.value)">
             <div class="range-limits">
-              <span>₹50,000</span>
+              <span>₹5,000</span>
               <span>₹2 Crore</span>
             </div>
           </div>
 
-          <!-- INTEREST RATE WITH SPACED STEPPERS -->
+          <!-- INTEREST RATE WITH 0% NO-COST SUPPORT -->
           <div class="input-group">
             <div class="input-header">
-              <label>Interest Rate (% P.A.)</label>
+              <div>
+                <label>Interest Rate (% P.A.)</label>
+                <button type="button" class="no-cost-pill" onclick="setZeroCostEmi()">⚡ 0% No-Cost</button>
+              </div>
               <div class="stepper-container">
                 <button type="button" class="step-btn" onclick="stepVal('rate', -0.1)">−</button>
                 <div class="input-field-wrap" style="min-width:115px;">
-                  <input type="number" id="txtRate" class="editable-input" value="8.5" min="0.1" max="50" step="0.05" oninput="onBoxChange('rate', this.value)">
+                  <input type="number" id="txtRate" class="editable-input" value="8.5" min="0" max="50" step="0.05" oninput="onBoxChange('rate', this.value)">
                   <span class="input-prefix" style="margin-left:6px; margin-right:0;">%</span>
                 </div>
                 <button type="button" class="step-btn" onclick="stepVal('rate', 0.1)">+</button>
               </div>
             </div>
-            <input type="range" id="rngRate" min="4" max="24" step="0.05" value="8.5" oninput="onSliderChange('rate', this.value)">
+            <input type="range" id="rngRate" min="0" max="24" step="0.05" value="8.5" oninput="onSliderChange('rate', this.value)">
             <div class="range-limits">
-              <span>4%</span>
+              <span>0% (No Cost)</span>
               <span>24%</span>
             </div>
           </div>
@@ -670,7 +685,7 @@
           </div>
 
           <button class="btn-action" onclick="shareWhatsApp()">💬 Share Calculation on WhatsApp</button>
-          <button class="btn-secondary" onclick="toggleAmortizationTable()">📊 Toggle Year-by-Year Schedule</button>
+          <button class="btn-secondary" onclick="toggleAmortizationTable()">📊 Toggle Schedule Breakdown</button>
 
           <div class="table-container" id="amortizationWrap" style="display:none;">
             <table>
@@ -733,6 +748,7 @@
     }
 
     function formatLakhs(val) {
+      if (val === 0) return '₹0';
       if (val >= 10000000) return '₹' + (val / 10000000).toFixed(2) + ' Cr';
       if (val >= 100000) return '₹' + (val / 100000).toFixed(2) + ' L';
       return formatInr(val);
@@ -746,16 +762,24 @@
       return `${totalM} Mo (${y}y ${m}m)`;
     }
 
-    // TACTILE STEPPER BUTTON HANDLER (+ / - with gap)
+    // Quick one-click 0% No Cost EMI activator
+    function setZeroCostEmi() {
+      state.R = 0;
+      document.getElementById('txtRate').value = 0;
+      document.getElementById('rngRate').value = 0;
+      calculateLoan();
+    }
+
+    // Stepper buttons handler
     function stepVal(field, delta) {
       if (field === 'amount') {
         let cur = parseFloat(document.getElementById('txtAmount').value) || 0;
-        cur = Math.max(50000, cur + delta);
+        cur = Math.max(500, cur + delta);
         document.getElementById('txtAmount').value = cur;
         onBoxChange('amount', cur);
       } else if (field === 'rate') {
         let cur = parseFloat(document.getElementById('txtRate').value) || 0;
-        cur = Math.max(0.1, +(cur + delta).toFixed(2));
+        cur = Math.max(0, +(cur + delta).toFixed(2));
         document.getElementById('txtRate').value = cur;
         onBoxChange('rate', cur);
       } else if (field === 'prepay') {
@@ -826,13 +850,14 @@
     }
 
     function onBoxChange(field, val) {
-      val = parseFloat(val) || 0;
+      val = parseFloat(val);
+      if (isNaN(val)) val = 0;
       if (field === 'amount') {
         state.P = val;
         document.getElementById('rngAmount').value = val;
       } else if (field === 'rate') {
-        state.R = val;
-        document.getElementById('rngRate').value = val;
+        state.R = Math.max(0, val);
+        document.getElementById('rngRate').value = Math.min(24, Math.max(0, val));
       } else if (field === 'prepay') {
         state.extraMonthly = val;
         document.getElementById('rngPrepay').value = val;
@@ -844,22 +869,31 @@
       state.annualLump = parseFloat(document.getElementById('inputLumpSum').value) || 0;
       state.stepUp = parseFloat(document.getElementById('selectStepUp').value) || 0;
 
-      if (state.P <= 0 || state.R <= 0 || state.totalMonths <= 0) {
+      if (state.P <= 0 || state.totalMonths <= 0) {
         document.getElementById('resEmi').innerText = '₹0';
         return;
       }
 
-      const monthlyRate = state.R / 12 / 100;
       const totalMonths = state.totalMonths;
+      let emi = 0;
+      let stdTotalInterest = 0;
 
-      const emi = (state.P * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) / (Math.pow(1 + monthlyRate, totalMonths) - 1);
-      const stdTotalPayment = emi * totalMonths;
-      const stdTotalInterest = stdTotalPayment - state.P;
+      // 0% NO-COST EMI VS STANDARD COMPOUND FORMULA
+      if (state.R === 0) {
+        emi = state.P / totalMonths;
+        stdTotalInterest = 0;
+      } else {
+        const monthlyRate = state.R / 12 / 100;
+        emi = (state.P * monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) / (Math.pow(1 + monthlyRate, totalMonths) - 1);
+        const stdTotalPayment = emi * totalMonths;
+        stdTotalInterest = stdTotalPayment - state.P;
+      }
 
       document.getElementById('resEmi').innerText = formatInr(emi);
       document.getElementById('resStdInterest').innerText = formatLakhs(stdTotalInterest);
       document.getElementById('resStdTenure').innerText = formatDurationText(totalMonths);
 
+      // Month-by-month calculation loop
       let balance = state.P;
       let month = 0;
       let newTotalInterest = 0;
@@ -868,14 +902,14 @@
       let periodInterest = 0;
       let periodPrincipal = 0;
 
-      while (balance > 1 && month < totalMonths) {
+      while (balance > 0.01 && month < totalMonths) {
         month++;
         
         if (state.stepUp > 0 && month > 1 && month % 12 === 1) {
           currentEmi = currentEmi * (1 + state.stepUp / 100);
         }
 
-        const interestComp = balance * monthlyRate;
+        const interestComp = (state.R === 0) ? 0 : (balance * (state.R / 12 / 100));
         let principalComp = currentEmi - interestComp + state.extraMonthly;
 
         if (state.annualLump > 0 && month % 12 === 0) {
@@ -893,7 +927,7 @@
         periodPrincipal += principalComp;
 
         const isShortLoan = totalMonths <= 12;
-        if (isShortLoan || month % 12 === 0 || balance <= 1) {
+        if (isShortLoan || month % 12 === 0 || balance <= 0.01) {
           records.push({
             label: isShortLoan ? `Month ${month}` : `Year ${Math.ceil(month / 12)}`,
             principal: periodPrincipal,
@@ -904,7 +938,7 @@
           periodPrincipal = 0;
         }
 
-        if (balance <= 1) break;
+        if (balance <= 0.01) break;
       }
 
       const interestSaved = Math.max(0, stdTotalInterest - newTotalInterest);
@@ -914,7 +948,12 @@
       document.getElementById('resNewTenure').innerText = formatDurationText(month);
 
       const badge = document.getElementById('savingsBadge');
-      if (interestSaved > 500 && monthsSaved > 0) {
+      if (state.R === 0) {
+        badge.style.display = 'inline-flex';
+        badge.innerText = (monthsSaved > 0) 
+          ? `⚡ 0% No Cost EMI: Cleared in ${month} Months!` 
+          : `⚡ 0% No Cost EMI: Zero Interest Charged!`;
+      } else if (interestSaved > 500 && monthsSaved > 0) {
         const savedText = monthsSaved >= 12 
           ? `${(monthsSaved / 12).toFixed(1)} Yrs Early` 
           : `${monthsSaved} Mo Early`;
@@ -924,9 +963,10 @@
         badge.style.display = 'none';
       }
 
+      // Visual split bar
       const totalSum = state.P + newTotalInterest;
-      const pPercent = (state.P / totalSum) * 100;
-      const iPercent = (newTotalInterest / totalSum) * 100;
+      const pPercent = totalSum > 0 ? (state.P / totalSum) * 100 : 100;
+      const iPercent = totalSum > 0 ? (newTotalInterest / totalSum) * 100 : 0;
       document.getElementById('barPrincipal').style.width = pPercent + '%';
       document.getElementById('barInterest').style.width = iPercent + '%';
 
